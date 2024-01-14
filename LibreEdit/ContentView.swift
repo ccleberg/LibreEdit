@@ -9,18 +9,15 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct TextFile: FileDocument {
-    // tell the system we support only plain text
     static var readableContentTypes = [UTType.plainText]
-
-    // by default our document is empty
     var text = ""
 
-    // a simple initializer that creates new, empty documents
+    // Initialize a new document
     init(initialText: String = "") {
         text = initialText
     }
 
-    // this initializer loads data that has been saved previously
+    // Load an existing document
     init(configuration: ReadConfiguration) throws {
         if let data = configuration.file.regularFileContents {
             text = String(decoding: data, as: UTF8.self)
@@ -29,13 +26,14 @@ struct TextFile: FileDocument {
         }
     }
 
-    // this will be called when the system wants to write our data to disk
+    // Save document data to file
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         let data = Data(text.utf8)
         return FileWrapper(regularFileWithContents: data)
     }
 }
 
+// Counts all words in the opened file
 func countWords(text: String) -> Int {
     let words = text.split { $0 == " " || $0.isNewline }
     return words.count
