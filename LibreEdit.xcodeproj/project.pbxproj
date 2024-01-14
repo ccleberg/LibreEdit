@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B930F732B544EA200413A34 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8B930F722B544EA200413A34 /* MarkdownUI */; };
+		8B930F752B54504D00413A34 /* MarkdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B930F742B54504D00413A34 /* MarkdownView.swift */; };
 		8BCA57062B537F9600DBA94B /* LibreEditApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCA57052B537F9600DBA94B /* LibreEditApp.swift */; };
 		8BCA57082B537F9600DBA94B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCA57072B537F9600DBA94B /* ContentView.swift */; };
 		8BCA570A2B537F9700DBA94B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8BCA57092B537F9700DBA94B /* Assets.xcassets */; };
@@ -14,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8B930F742B54504D00413A34 /* MarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownView.swift; sourceTree = "<group>"; };
 		8BCA57022B537F9600DBA94B /* LibreEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LibreEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BCA57052B537F9600DBA94B /* LibreEditApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibreEditApp.swift; sourceTree = "<group>"; };
 		8BCA57072B537F9600DBA94B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -26,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B930F732B544EA200413A34 /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,6 +59,7 @@
 				8BCA57072B537F9600DBA94B /* ContentView.swift */,
 				8BCA57092B537F9700DBA94B /* Assets.xcassets */,
 				8BCA570B2B537F9700DBA94B /* Preview Content */,
+				8B930F742B54504D00413A34 /* MarkdownView.swift */,
 			);
 			path = LibreEdit;
 			sourceTree = "<group>";
@@ -83,6 +88,9 @@
 			dependencies = (
 			);
 			name = LibreEdit;
+			packageProductDependencies = (
+				8B930F722B544EA200413A34 /* MarkdownUI */,
+			);
 			productName = LibreEdit;
 			productReference = 8BCA57022B537F9600DBA94B /* LibreEdit.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +119,9 @@
 				Base,
 			);
 			mainGroup = 8BCA56F92B537F9600DBA94B;
+			packageReferences = (
+				8B930F712B544EA200413A34 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+			);
 			productRefGroup = 8BCA57032B537F9600DBA94B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -137,6 +148,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B930F752B54504D00413A34 /* MarkdownView.swift in Sources */,
 				8BCA57082B537F9600DBA94B /* ContentView.swift in Sources */,
 				8BCA57062B537F9600DBA94B /* LibreEditApp.swift in Sources */,
 			);
@@ -346,6 +358,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8B930F712B544EA200413A34 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8B930F722B544EA200413A34 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B930F712B544EA200413A34 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8BCA56FA2B537F9600DBA94B /* Project object */;
 }
