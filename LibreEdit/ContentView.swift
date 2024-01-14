@@ -6,104 +6,81 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
-func getDatetime() -> String {
-    let dateFormatter = DateFormatter()
-    let enUSPosixLocale = Locale(identifier: "en_US_POSIX")
-    dateFormatter.locale = enUSPosixLocale
-    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-    dateFormatter.calendar = Calendar(identifier: .gregorian)
+struct TextFile: FileDocument {
+    // tell the system we support only plain text
+    static var readableContentTypes = [UTType.plainText]
 
-    let iso8601String = dateFormatter.string(from: Date())
+    // by default our document is empty
+    var text = ""
 
-    return iso8601String
+    // a simple initializer that creates new, empty documents
+    init(initialText: String = "") {
+        text = initialText
+    }
+
+    // this initializer loads data that has been saved previously
+    init(configuration: ReadConfiguration) throws {
+        if let data = configuration.file.regularFileContents {
+            text = String(decoding: data, as: UTF8.self)
+        } else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+    }
+
+    // this will be called when the system wants to write our data to disk
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        let data = Data(text.utf8)
+        return FileWrapper(regularFileWithContents: data)
+    }
 }
 
-// Ensure that `Supports Document Browser` = YES in the `ios-edit.xcodeproj` file,
-// so that users can browse saved files in the Files app
-func getDocumentsDirectory() -> URL {
-    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-    let documentsDirectory = paths[0]
-    return documentsDirectory
+func countWords(text: String) -> Int {
+    let words = text.split { $0 == " " || $0.isNewline }
+    return words.count
 }
 
 struct ContentView: View {
-    enum FocusedField {
-        case content
-    }
-    
-    @State private var content = ""
-    @State private var wordCount: Int = 0
+    @Binding var document: TextFile
     @State private var showingPopover = false
-    @FocusState private var focusedField: FocusedField?
-    
-    var body: some View {
-        NavigationView {
-            VStack(alignment: .leading) {
-                Text("\(wordCount) words")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                    .padding(.trailing)
-                TextEditor(text: $content)
-                    .onChange(of: content) {
-                        let words = content.split { $0 == " " || $0.isNewline }
-                        self.wordCount = words.count
-                    }
-                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                    .focused($focusedField, equals: .content)
-            }
-            .onAppear {
-                focusedField = .content
-            }
-            .padding()
-            .navigationTitle("Libre Edit")
-            .toolbar {
-                ToolbarItemGroup(placement: .primaryAction) {
-                    Button(action: {
-                        do {
-                            let data = Data(self.content.utf8)
-                            let url = URL.documentsDirectory.appending(path: (getDatetime() + ".txt"))
-                            try data.write(to: url, options: [.atomic, .completeFileProtection])
+    @State private var wordCount: Int = 0
 
-                            // TODO: Alerts currently aren't working/aren't visible
-                            Text("File saved successfully!")
-                                .foregroundColor(.white)
-                                .bold()
-                                .font(.footnote)
-                                .frame(width: 140, height: 30)
-                                .background(Color.indigo.cornerRadius(7))
-                            print("Saved content to file: \(url)")
-                        } catch {
-                            // TODO: Alerts currently aren't working/aren't visible
-                            Text("Failed to save file.")
-                                .foregroundColor(.white)
-                                .bold()
-                                .font(.footnote)
-                                .frame(width: 140, height: 30)
-                                .background(Color.red.cornerRadius(7))
-                            print("Error saving content to file: \(error)")
-                        }
-                    }) {
-                        Text("Save")
-                    }
-                    // TODO: Confirm (possibly save) & then clear TextEditor
-                    Button(action: {
-                        print("TODO: This will create a new note.")
-                    }) {
-                        Text("New")
-                    }
-                }
+    var body: some View {
+        Text("\(wordCount) words")
+            .foregroundColor(Color.white)
+            .font(.headline)
+            .padding(.trailing)
+            .frame(maxWidth: .infinity, maxHeight: 50)
+            .background(Color.gray.opacity(0.3))
+            .padding(.top, 20)
+        TextEditor(text: $document.text)
+            .onAppear {
+                self.wordCount = countWords(text: document.text)
+            }
+            .onChange(of: document.text) {
+                self.wordCount = countWords(text: document.text)
+            }
+            .toolbar {
                 ToolbarItemGroup(placement: .secondaryAction) {
                     Button {
                         showingPopover = true
                     } label: {
-                        Text("App Info")
+                        Text("More Info")
                     }.popover(isPresented: $showingPopover) {
                         VStack(alignment: .leading) {
-                            Text("App Info")
+                            Text("More Info")
                                 .font(.largeTitle)
                             Text("")
-                            Text("Libre Edit is a free and open source text editor for iOS built by [Christian Cleberg](https://cleberg.net).")
+                            Text("Instructions")
+                                .font(.title)
+                            Text("")
+                            Text("LibreEdit provides a direct interface with the Apple Files app on your iPhone. Simply navigate to your preferred directory, edit existing files, or create new files!")
+                            Text("")
+                            Text("Developer")
+                                .font(.title)
+                            Text("")
+                            Text("LibreEdit is a free and open source text editor for iOS built by [Christian Cleberg](https://cleberg.net).")
                             Text("")
                             Text("Visit the [GitHub Repository](https://github.com/ccleberg/ios-edit) to view the source code.")
                             Text("")
@@ -114,10 +91,5 @@ struct ContentView: View {
                     }
                 }
             }
-        }
     }
-}
-
-#Preview {
-    ContentView()
 }
